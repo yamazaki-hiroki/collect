@@ -55,8 +55,9 @@ pip install pygame
 # 起動
 python3 game_play.py
 
+```
 ## メンバー
-
+ 
 | 名前 |
 |------|
 | 山崎　弘季 |
