@@ -57,15 +57,14 @@ Maeda Jrs.
 例
 
 ```bash
-git clone <repository-url>
-cd <repository-name>
+git clone https://github.com/yamazaki-hiroki/collect
+cd collect/hackit_素子コレクト
 
 # 必要なライブラリをインストール
-...
+pip install pygame
 
 # 起動
-...
-```
+python3 game_play.py
 
 ## メンバー
 
