@@ -1,0 +1,57 @@
+{
+    "version": 1,
+    "saved_at": "2026-08-03T01:45:02+09:00",
+    "player": {
+        "name": "muto",
+        "money": 1000,
+        "map_num": 1,
+        "x": 192,
+        "y": 576,
+        "direction": "left",
+        "encounter_safe_steps": 0,
+        "tutorial_stage": 3,
+        "party_status": [
+            {
+                "character_id": 4,
+                "hp": 60,
+                "sp": 100
+            }
+        ]
+    },
+    "files": {
+        "items": {
+            "inventory": [],
+            "items": {
+                "1": {
+                    "name": "item1",
+                    "lore": [
+                        "lore1",
+                        "lore2"
+                    ]
+                },
+                "2": {
+                    "name": "item2",
+                    "lore": [
+                        "lore3",
+                        "lore4"
+                    ]
+                }
+            }
+        },
+        "characters": {
+            "inventory": [
+                {
+                    "character_id": 4,
+                    "amount": 1
+                }
+            ]
+        },
+        "party": {
+            "party": [
+                {
+                    "character_id": 4
+                }
+            ]
+        }
+    }
+}

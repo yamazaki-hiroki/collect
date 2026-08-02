@@ -1,0 +1,51 @@
+{
+    "0":  {
+              "name":  "海",
+              "type":  "wall",
+              "img":  "hackit_素子コレクト\\TILE\\sea.png"
+          },
+    "1":  {
+              "name":  "地面(草)",
+              "type":  "ground",
+              "img":  "hackit_素子コレクト\\TILE\\grass.png"
+          },
+    "2":  {
+              "name":  "石",
+              "type":  "wall",
+              "img":  "hackit_素子コレクト\\TILE\\stone.png"
+          },
+    "3":  {
+              "name":  "出現属性(草原)",
+              "type":  "encounter",
+              "img":  "hackit_素子コレクト\\TILE\\grass.png",
+              "encounter_rate":  0.12,
+              "safe_steps":  2,
+              "enemy_ids":  [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13
+                            ],
+              "enemy_min":  1,
+              "enemy_max":  2
+          },
+    "4":  {
+              "name":  "fence",
+              "type":  "wall",
+              "img":  "TILE/saku.png"
+          },
+    "5":  {
+              "name":  "tree",
+              "type":  "wall",
+              "img":  "TILE/tree.png"
+          }
+}

@@ -1,0 +1,19 @@
+{
+    "inventory": [],
+    "items": {
+        "1": {
+            "name": "item1",
+            "lore": [
+                "lore1",
+                "lore2"
+            ]
+        },
+        "2": {
+            "name": "item2",
+            "lore": [
+                "lore3",
+                "lore4"
+            ]
+        }
+    }
+}

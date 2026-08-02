@@ -1,0 +1,140 @@
+[
+    {
+        "num":  0,
+        "x":  23,
+        "y":  1,
+        "img":  "hackit_素子コレクト\\INFO\\RESOURCE\\villge.png",
+        "wall":  true,
+        "type":  "npc",
+        "data":  {
+                     "name":  "オオタ",
+                     "text":  "ここから先は野生の素子が出てくる\nここでバトルに慣れていきなさい"
+                 }
+    },
+    {
+        "num":  0,
+        "x":  15,
+        "y":  8,
+        "img":  "hackit_素子コレクト\\INFO\\RESOURCE\\student.png",
+        "wall":  true,
+        "type":  "npc",
+        "data":  {
+                     "name":  "トクダ",
+                     "text":  "おいおい待ってくれよ\n合成もせずにこの先に進むのか？\nこの下にあるブレッドボードで合成してから進んでくれ"
+                 }
+    },
+    {
+        "num":  0,
+        "x":  9,
+        "y":  1,
+        "img":  "hackit_素子コレクト\\INFO\\RESOURCE\\engineer.png",
+        "wall":  true,
+        "type":  "npc",
+        "data":  {
+                     "name":  "シマ",
+                     "text":  "あの爆発以降\n各地の素子が意識を持つようになってしまった。\nくれぐれも気を付けてくれ"
+                 }
+    },
+    {
+        "num":  1,
+        "x":  9,
+        "y":  18,
+        "img":  "TILE/saku.png",
+        "wall":  true,
+        "type":  "bord",
+        "data":  {
+                     "name":  "操作案内",
+                     "text":  "WASDまたは矢印キーで移動\n長押しで連続移動、斜め移動もできます\nSpaceでNPCや設備を調べます\n*ln\nMでメニューを開閉\nEscで閉じる、Backspaceで一つ戻る\nまず北にいるマエダに話しかけてください"
+                 }
+    },
+    {
+        "num":  1,
+        "x":  14,
+        "y":  7,
+        "img":  "INFO/RESOURCE/engineer.png",
+        "wall":  true,
+        "type":  "tutorial",
+        "data":  {
+                     "name":  "エンジニア:マエダ",
+                     "stages":  {
+                                    "0":  {
+                                              "name":  "エンジニア:マエダ",
+                                              "text":  "あのアークフラッシュ爆発以降、\n各地の素子が意識を持つようになった。\nオーム村の隣、アンペールの森を調査してくれ。\n*ln\n手ぶらで森へ入るのは危険だ。\nこのLEDを連れていきなさい。\nMでメニューを開き、素子と編成を確認できる。",
+                                              "advance_to":  1
+                                          },
+                                    "1":  {
+                                              "name":  "エンジニア:マエダ",
+                                              "text":  "森へ行く前にバトルに慣れておこう。\n右の訓練場にいる技術士補ヤマザキに\n話しかけてくれ。"
+                                          },
+                                    "2":  {
+                                              "name":  "エンジニア:マエダ",
+                                              "text":  "意外と手慣れているじゃないか。\nこれなら大丈夫だな。\n北のゲートからオーム村へ向かってくれ。\n行ってこい！",
+                                              "advance_to":  3
+                                          }
+                                },
+                     "default":  {
+                                     "name":  "エンジニア:マエダ",
+                                     "text":  "アンペールの森の調査、任せたぞ。"
+                                 }
+                 }
+    },
+    {
+        "num":  1,
+        "x":  23,
+        "y":  9,
+        "img":  "INFO/RESOURCE/student.png",
+        "wall":  true,
+        "type":  "tutorial",
+        "data":  {
+                     "name":  "エンジニア補佐:ヤマザキ",
+                     "stages":  {
+                                    "0":  {
+                                              "name":  "エンジニア補佐:ヤマザキ",
+                                              "text":  "まずはマエダさんから話を聞いてください。"
+                                          },
+                                    "1":  {
+                                              "name":  "エンジニア補佐:ヤマザキ",
+                                              "text":  "私の水晶発振器と実戦しましょう。\n右側のLEDを選び、まずは「ボルト」を選びます。\n単体技は左側の水晶発振器を選びます。\n技にはSPを消費するものがあります。\n*ln\n味方全員の行動を決めたら、\n中央の「決定」でターンを開始します。\nW/Sで選択、A/Dで左右の欄へ移動、\nEnterまたはSpaceで決定です。",
+                                              "battle_enemy_ids":  [
+                                                                       5
+                                                                   ],
+                                              "victory_stage":  2
+                                          },
+                                    "2":  {
+                                              "name":  "エンジニア補佐:ヤマザキ",
+                                              "text":  "お見事です。マエダさんに報告してください。"
+                                          }
+                                },
+                     "default":  {
+                                     "name":  "エンジニア補佐:ヤマザキ",
+                                     "text":  "アンペールの森でも気をつけて。"
+                                 }
+                 }
+    },
+    {
+        "num":  1,
+        "x":  5,
+        "y":  18,
+        "img":  "INFO/RESOURCE/save.png",
+        "wall":  true,
+        "type":  "save",
+        "data":  {
+                     "active_img":  "INFO/RESOURCE/save.png"
+                 }
+    },
+    {
+        "num":  1,
+        "x":  15,
+        "y":  1,
+        "img":  "TILE/saku.png",
+        "wall":  true,
+        "type":  "tutorial_exit",
+        "data":  {
+                     "required_stage":  3,
+                     "locked_text":  "マエダのチュートリアルを終えてから進もう",
+                     "map_num":  0,
+                     "x":  6,
+                     "y":  9
+                 }
+    }
+]

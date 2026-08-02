@@ -1,0 +1,123 @@
+{
+    "version": 1,
+    "saved_at": "2026-08-02T18:41:39+09:00",
+    "player": {
+        "name": "muto",
+        "money": 1000,
+        "map_num": 0,
+        "x": 0,
+        "y": 0,
+        "direction": "front",
+        "encounter_safe_steps": 0
+    },
+    "files": {
+        "items": {
+            "inventory": [
+                {
+                    "item_id": 1,
+                    "amount": 10
+                },
+                {
+                    "item_id": 2,
+                    "amount": 10
+                },
+                {
+                    "item_id": 3,
+                    "amount": 7
+                },
+                {
+                    "item_id": 4,
+                    "amount": 10
+                }
+            ],
+            "items": {
+                "1": {
+                    "name": "item1",
+                    "lore": [
+                        "lore1",
+                        "lore2"
+                    ]
+                },
+                "2": {
+                    "name": "item2",
+                    "lore": [
+                        "lore3",
+                        "lore4"
+                    ]
+                }
+            }
+        },
+        "characters": {
+            "inventory": [
+                {
+                    "character_id": 1,
+                    "amount": 10
+                },
+                {
+                    "character_id": 2,
+                    "amount": 10
+                },
+                {
+                    "character_id": 3,
+                    "amount": 11
+                },
+                {
+                    "character_id": 4,
+                    "amount": 10
+                },
+                {
+                    "character_id": 5,
+                    "amount": 10
+                },
+                {
+                    "character_id": 6,
+                    "amount": 10
+                },
+                {
+                    "character_id": 7,
+                    "amount": 10
+                },
+                {
+                    "character_id": 8,
+                    "amount": 11
+                },
+                {
+                    "character_id": 9,
+                    "amount": 10
+                },
+                {
+                    "character_id": 10,
+                    "amount": 10
+                },
+                {
+                    "character_id": 11,
+                    "amount": 10
+                },
+                {
+                    "character_id": 12,
+                    "amount": 10
+                },
+                {
+                    "character_id": 13,
+                    "amount": 10
+                }
+            ]
+        },
+        "party": {
+            "party": [
+                {
+                    "character_id": 6
+                },
+                {
+                    "character_id": 3
+                },
+                {
+                    "character_id": 12
+                },
+                {
+                    "character_id": 5
+                }
+            ]
+        }
+    }
+}
