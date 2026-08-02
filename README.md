@@ -15,7 +15,6 @@ Maeda Jrs.
 以下を掲載してください。
 
 - 発表資料URL（必須）
-  https://kanazawa-it.app.box.com/integrations/officeonline/openOfficeOnline?fileId=2383387982346&sharedAccessCode=
 - デモURL（任意）
 - デモ動画（任意）
 - スクリーンショット（1枚以上推奨）
