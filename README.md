@@ -12,7 +12,7 @@
 
 ## プレイ画面
 
-(images/start.png)
+![最初の画面](images/start.png)
 
 ## 背景・課題
 
