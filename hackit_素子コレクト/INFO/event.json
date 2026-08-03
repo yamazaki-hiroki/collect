@@ -126,7 +126,6 @@
         "num":  1,
         "x":  15,
         "y":  1,
-        "img":  "TILE/saku.png",
         "wall":  true,
         "type":  "tutorial_exit",
         "data":  {
@@ -135,6 +134,29 @@
                      "map_num":  0,
                      "x":  6,
                      "y":  9
+                 },
+        "img":  "TILE/warp_ue.png"
+    },
+    {
+        "num":  0,
+        "x":  15,
+        "y":  10,
+        "img":  "INFO/RESOURCE/bread.png",
+        "wall":  true,
+        "type":  "synthesis",
+        "data":  {
+
+                 }
+    },
+    {
+        "num":  0,
+        "x":  17,
+        "y":  10,
+        "img":  "INFO/RESOURCE/save.png",
+        "wall":  true,
+        "type":  "save",
+        "data":  {
+                     "active_img":  "INFO/RESOURCE/save.png"
                  }
     }
 ]

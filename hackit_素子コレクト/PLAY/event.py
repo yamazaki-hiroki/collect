@@ -77,6 +77,7 @@ class Event:
 
     def message_talk(self, game):
         game.full_restore_party()
+        game.register_checkpoint()
         success = game.save_game()
         if success and not self.used:
             self.used = True
@@ -166,16 +167,8 @@ class Event:
         base_y = self.rect.y - s_y
         if self.type == "tutorial_exit":
             silver = (205, 210, 220)
-            gate_rect = pygame.Rect(base_x - 16, base_y - 14, 64, 46)
-            pygame.draw.rect(screen, (25, 28, 34), gate_rect)
-            pygame.draw.rect(screen, silver, gate_rect, 3)
-            pygame.draw.line(
-                screen,
-                silver,
-                (gate_rect.centerx, gate_rect.top + 3),
-                (gate_rect.centerx, gate_rect.bottom - 3),
-                2,
-            )
+            gate_rect = self.img.get_rect(topleft=(base_x, base_y))
+            screen.blit(self.img, gate_rect)
             self._draw_world_label(
                 screen,
                 "\u5317\u30b2\u30fc\u30c8",

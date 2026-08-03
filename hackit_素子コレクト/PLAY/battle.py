@@ -68,7 +68,7 @@ class Battle:
     SOCKET_MAX_CAPTURE_RATE = 0.90
     BATTERY_HEAL_RATES = {1: 0.40, 2: 0.70, 4: 0.20}
     CAPTURE_THROW_FRAMES = max(1, int(FPS * 0.55))
-    CAPTURE_SHAKE_FRAMES = max(1, int(FPS * 1.35))
+    CAPTURE_ABSORB_FRAMES = max(1, int(FPS * 1.35))
     CAPTURE_RESULT_FRAMES = max(1, int(FPS * 1.10))
 
     def __init__(
@@ -815,19 +815,21 @@ class Battle:
 
     @staticmethod
     def _load_capture_image():
-        try:
-            image = pygame.image.load(
-                resource_path("INFO", "RESOURCE", "normal_socket.png")
-            ).convert_alpha()
-            return pygame.transform.scale(image, (56, 56))
-        except (FileNotFoundError, pygame.error, OSError):
-            return None
+        for filename in ("socket.png", "normal_socket.png"):
+            try:
+                image = pygame.image.load(
+                    resource_path("INFO", "RESOURCE", filename)
+                ).convert_alpha()
+                return pygame.transform.scale(image, (56, 56))
+            except (FileNotFoundError, pygame.error, OSError):
+                continue
+        return None
 
     def _capture_phase_message(self):
         if self.capture_phase == "throw":
             return "\u30bd\u30b1\u30c3\u30c8\u3092\u6295\u3052\u305f"
-        if self.capture_phase == "shake":
-            return "\u6355\u7372\u5224\u5b9a\u4e2d..."
+        if self.capture_phase == "absorb":
+            return "\u30bd\u30b1\u30c3\u30c8\u306b\u5438\u53ce\u4e2d..."
         return self.message
 
     def _start_capture_attempt(self, target, item_name, capture_rate):
@@ -935,13 +937,13 @@ class Battle:
             self.capture_phase == "throw"
             and self.capture_frame >= self.CAPTURE_THROW_FRAMES
         ):
-            self.capture_phase = "shake"
+            self.capture_phase = "absorb"
             self.capture_frame = 0
-            self.message = "\u6355\u7372\u5224\u5b9a\u4e2d..."
+            self.message = "\u30bd\u30b1\u30c3\u30c8\u306b\u5438\u53ce\u4e2d..."
             return
         if (
-            self.capture_phase == "shake"
-            and self.capture_frame >= self.CAPTURE_SHAKE_FRAMES
+            self.capture_phase == "absorb"
+            and self.capture_frame >= self.CAPTURE_ABSORB_FRAMES
         ):
             self._apply_capture_result()
             self.capture_phase = "result"
@@ -1232,15 +1234,12 @@ class Battle:
         return 0, 0
 
     def _combatant_alpha(self, combatant):
-        if self.capture_active and combatant is self.capture_target:
-            if self.capture_phase == "shake":
-                progress = min(
-                    1.0,
-                    self.capture_frame / self.CAPTURE_SHAKE_FRAMES,
-                )
-                return max(45, round(255 * (1.0 - progress)))
-            if self.capture_phase == "result":
-                return 0 if self.capture_success else 255
+        if (
+            self.capture_active
+            and combatant is self.capture_target
+            and self.capture_phase in ("absorb", "result")
+        ):
+            return 0
         if combatant.ko_animation_active:
             progress = min(
                 1.0,
@@ -1302,6 +1301,45 @@ class Battle:
         screen.blit(sprite, rect)
         return rect
 
+    @staticmethod
+    def _capture_socket_center(target_center):
+        return (target_center[0], max(34, target_center[1] - 48))
+
+    def _capture_target_transform(self, target_center):
+        target = pygame.Vector2(target_center)
+        socket = pygame.Vector2(self._capture_socket_center(target_center))
+        if self.capture_phase == "absorb":
+            progress = min(1.0, self.capture_frame / self.CAPTURE_ABSORB_FRAMES)
+            eased = progress * progress * (3.0 - 2.0 * progress)
+            center = target.lerp(socket, eased)
+            return (center.x, center.y), max(0.06, 1.0 - eased)
+        if self.capture_phase == "result" and not self.capture_success:
+            progress = min(1.0, self.capture_frame / self.CAPTURE_RESULT_FRAMES)
+            eased = progress * progress * (3.0 - 2.0 * progress)
+            center = socket.lerp(target, eased)
+            return (center.x, center.y), max(0.06, eased)
+        return tuple(socket), 0.06
+
+    def _draw_capture_target_sprite(self, screen, center, scale):
+        size = (58, 58)
+        image = self._load_image(self.capture_target.character, size)
+        visual = pygame.Surface(size, pygame.SRCALPHA)
+        if image is None:
+            pygame.draw.rect(visual, (25, 25, 40), visual.get_rect())
+            pygame.draw.rect(visual, LOW_YELLOW, visual.get_rect(), 2)
+            mark = self.small_font.render("?", True, LOWH)
+            visual.blit(mark, mark.get_rect(center=visual.get_rect().center))
+        else:
+            visual.blit(image, (0, 0))
+        scaled_size = (
+            max(2, round(size[0] * scale)),
+            max(2, round(size[1] * scale)),
+        )
+        visual = pygame.transform.scale(visual, scaled_size)
+        rect = visual.get_rect(center=(round(center[0]), round(center[1])))
+        screen.blit(visual, rect)
+        return rect
+
     def _draw_capture_animation(self, screen):
         if not self.capture_active or self.capture_target is None:
             return
@@ -1309,6 +1347,7 @@ class Battle:
             id(self.capture_target),
             (82, 75),
         )
+        socket_center = self._capture_socket_center(target_center)
         effect_layer = pygame.Surface((WIDTH, self.UI_TOP), pygame.SRCALPHA)
 
         if self.capture_phase == "throw":
@@ -1318,7 +1357,7 @@ class Battle:
             )
             eased = progress * progress * (3.0 - 2.0 * progress)
             start = pygame.Vector2(WIDTH - 105, self.UI_TOP - 45)
-            end = pygame.Vector2(target_center)
+            end = pygame.Vector2(socket_center)
             position = start.lerp(end, eased)
             position.y -= math.sin(math.pi * progress) * 105
             for point_index in range(1, 8):
@@ -1345,36 +1384,50 @@ class Battle:
             )
             return
 
-        if self.capture_phase == "shake":
+        if self.capture_phase == "absorb":
             progress = min(
                 1.0,
-                self.capture_frame / self.CAPTURE_SHAKE_FRAMES,
+                self.capture_frame / self.CAPTURE_ABSORB_FRAMES,
             )
-            shake = math.sin(progress * math.pi * 6) * (12 * (1.0 - progress * 0.35))
-            socket_center = (target_center[0] + shake, target_center[1] + 15)
-            ring_radius = max(6, round(58 * (1.0 - progress)))
-            pygame.draw.circle(
-                effect_layer,
-                (255, 220, 65, max(30, round(210 * (1.0 - progress)))),
-                target_center,
-                ring_radius,
-                3,
-            )
-            beam_alpha = max(25, round(190 * (1.0 - progress)))
+            visual_center, visual_scale = self._capture_target_transform(target_center)
+            beam_alpha = max(60, round(220 * (1.0 - progress * 0.55)))
             pygame.draw.line(
                 effect_layer,
                 (255, 225, 85, beam_alpha),
-                target_center,
-                (round(socket_center[0]), round(socket_center[1])),
-                5,
+                (round(visual_center[0]), round(visual_center[1])),
+                socket_center,
+                max(2, round(7 * (1.0 - progress * 0.55))),
             )
+            ring_radius = max(8, round(42 * (1.0 - progress * 0.65)))
+            pygame.draw.circle(
+                effect_layer,
+                (255, 220, 65, max(55, round(210 * (1.0 - progress)))),
+                socket_center,
+                ring_radius,
+                3,
+            )
+            for particle_index in range(8):
+                particle_progress = (progress + particle_index / 8.0) % 1.0
+                point = pygame.Vector2(target_center).lerp(
+                    pygame.Vector2(socket_center),
+                    particle_progress,
+                )
+                side = math.sin((particle_progress + particle_index) * math.tau) * 9
+                point.x += side
+                pygame.draw.circle(
+                    effect_layer,
+                    (255, 235, 115, max(45, round(210 * particle_progress))),
+                    (round(point.x), round(point.y)),
+                    max(2, round(4 * particle_progress)),
+                )
             screen.blit(effect_layer, (0, 0))
-            pulse_scale = 1.0 + 0.08 * math.sin(progress * math.pi * 6)
+            self._draw_capture_target_sprite(screen, visual_center, visual_scale)
+            pulse = 1.0 + 0.08 * math.sin(progress * math.pi * 8)
             self._draw_socket_sprite(
                 screen,
                 socket_center,
-                angle=shake * 2,
-                scale=pulse_scale,
+                angle=math.sin(progress * math.pi * 6) * 5,
+                scale=pulse,
             )
             return
 
@@ -1392,7 +1445,7 @@ class Battle:
                 pygame.draw.circle(
                     effect_layer,
                     (255, 220, 60, alpha),
-                    target_center,
+                    socket_center,
                     radius,
                     4,
                 )
@@ -1400,8 +1453,8 @@ class Battle:
                 angle = particle_index * math.tau / 12 + progress * 1.5
                 radius = 24 + progress * 70
                 point = (
-                    round(target_center[0] + math.cos(angle) * radius),
-                    round(target_center[1] + math.sin(angle) * radius),
+                    round(socket_center[0] + math.cos(angle) * radius),
+                    round(socket_center[1] + math.sin(angle) * radius),
                 )
                 pygame.draw.circle(
                     effect_layer,
@@ -1412,13 +1465,15 @@ class Battle:
             screen.blit(effect_layer, (0, 0))
             self._draw_socket_sprite(
                 screen,
-                target_center,
-                scale=max(0.2, 1.0 - progress * 0.55),
+                socket_center,
+                scale=1.0 + 0.06 * math.sin(progress * math.pi * 6),
             )
             result = self.small_font.render("CAPTURE!", True, (255, 230, 80))
         else:
+            visual_center, visual_scale = self._capture_target_transform(target_center)
+            self._draw_capture_target_sprite(screen, visual_center, visual_scale)
             shake = math.sin(progress * math.pi * 8) * 7 * (1.0 - progress)
-            center = (target_center[0] + shake, target_center[1] + 15)
+            center = (socket_center[0] + shake, socket_center[1])
             socket_rect = self._draw_socket_sprite(
                 screen,
                 center,
@@ -1439,9 +1494,10 @@ class Battle:
                 5,
             )
             result = self.small_font.render("FAILED", True, RED)
+        result_center_y = max(18, socket_center[1] - 40)
         screen.blit(
             result,
-            result.get_rect(center=(target_center[0], target_center[1] - 55)),
+            result.get_rect(center=(target_center[0], result_center_y)),
         )
     def _draw_battlefield(self, screen):
         pygame.draw.rect(screen, (18, 24, 32), (0, 0, WIDTH, self.UI_TOP))

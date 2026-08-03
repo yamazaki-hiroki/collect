@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "saved_at": "2026-08-03T01:45:02+09:00",
+    "saved_at": "2026-08-03T09:45:30+09:00",
     "player": {
         "name": "muto",
         "money": 1000,
@@ -9,7 +9,13 @@
         "y": 576,
         "direction": "left",
         "encounter_safe_steps": 0,
-        "tutorial_stage": 3,
+        "tutorial_stage": 2,
+        "checkpoint": {
+            "map_num": 1,
+            "x": 192,
+            "y": 576,
+            "direction": "left"
+        },
         "party_status": [
             {
                 "character_id": 4,

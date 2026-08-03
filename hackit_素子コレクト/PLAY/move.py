@@ -10,8 +10,24 @@ class Move:
         self.map = maps.get(str(num), maps["0"])
         with open(resource_path("INFO", "block.json"), "r", encoding="utf-8") as f:
             self.block_data = json.load(f)
-        for i, block in self.block_data.items():
-            self.block_data[i]["img"] = pygame.image.load(resource_path(block["img"]))
+        for block in self.block_data.values():
+            image = pygame.image.load(resource_path(block["img"]))
+            scale = max(1, int(block.get("scale", 1)))
+            if scale != 1:
+                image = pygame.transform.scale(
+                    image,
+                    (image.get_width() * scale, image.get_height() * scale),
+                )
+            block["img"] = image
+            if block.get("base_img"):
+                block["base_img"] = pygame.image.load(resource_path(block["base_img"]))
+        # FRONT/BACK describe map movement: up shows the back, down shows the face.
+        self.player_images = {
+            FRONT: pygame.image.load(resource_path("INFO", "RESOURCE", "main_charb.png")),
+            BACK: pygame.image.load(resource_path("INFO", "RESOURCE", "main_charf.png")),
+            LEFT: pygame.image.load(resource_path("INFO", "RESOURCE", "main_charr.png")),
+            RIGHT: pygame.image.load(resource_path("INFO", "RESOURCE", "main_charl.png")),
+        }
         self.event = []
         self.direction = FRONT
         self.moving = False
@@ -92,6 +108,8 @@ class Move:
 
     def _start_move(self, movement):
         dx, dy, direction = movement
+        # Face the requested direction even when the destination is blocked.
+        self.direction = direction
 
         # 斜め入力は横軸・縦軸を別々に判定する。
         # 一方が壁でも、もう一方が通れるなら壁に沿って移動する。
@@ -191,19 +209,37 @@ class Move:
 
     def draw(self, screen):
         self.change_scroll()
-        start_x = self.scroll_x // TILE
-        start_y = self.scroll_y // TILE
-        end_x = start_x + WIDTH // TILE + 2
-        end_y = start_y + HEIGHT // TILE + 2
+        start_x = max(0, self.scroll_x // TILE - 1)
+        start_y = max(0, self.scroll_y // TILE - 1)
+        end_x = start_x + WIDTH // TILE + 4
+        end_y = start_y + HEIGHT // TILE + 4
+        visible_tiles = []
         for y in range(start_y, min(end_y, len(self.map))):
             for x in range(start_x, min(end_x, len(self.map[0]))):
                 block_num = self.map[y][x]
-                img = self.block_data[str(block_num)]["img"]
-                screen.blit(img,(x * TILE - self.scroll_x, y * TILE - self.scroll_y))
+                block = self.block_data[str(block_num)]
+                visible_tiles.append((x, y, block))
+                base_image = block.get("base_img", block["img"])
+                screen.blit(
+                    base_image,
+                    (x * TILE - self.scroll_x, y * TILE - self.scroll_y),
+                )
+
+        for x, y, block in visible_tiles:
+            if block.get("layer") != "overlay":
+                continue
+            image = block["img"]
+            draw_x = x * TILE - self.scroll_x - (image.get_width() - TILE) // 2
+            draw_y = y * TILE - self.scroll_y - (image.get_height() - TILE)
+            screen.blit(image, (draw_x, draw_y))
         for event in self.event:
             if event.type not in ("npc", "tutorial"):
                 event.draw(screen, self.scroll_x, self.scroll_y)
-        pygame.draw.rect(screen,(10,10,10),(self.rect.x-self.scroll_x,self.rect.y-self.scroll_y,TILE,TILE))
+        player_image = self.player_images.get(self.direction, self.player_images[FRONT])
+        screen.blit(
+            player_image,
+            (self.rect.x - self.scroll_x, self.rect.y - self.scroll_y),
+        )
         for event in self.event:
             if event.type in ("npc", "tutorial"):
                 event.draw(screen, self.scroll_x, self.scroll_y)

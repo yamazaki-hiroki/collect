@@ -19,33 +19,42 @@
               "type":  "encounter",
               "img":  "hackit_素子コレクト\\TILE\\grass.png",
               "encounter_rate":  0.12,
-              "safe_steps":  2,
+              "safe_steps":  8,
               "enemy_ids":  [
                                 1,
                                 2,
-                                3,
-                                4,
-                                5,
-                                6,
-                                7,
-                                8,
-                                9,
-                                10,
-                                11,
-                                12,
-                                13
+                                3
                             ],
               "enemy_min":  1,
-              "enemy_max":  2
+              "enemy_max":  4
           },
     "4":  {
-              "name":  "fence",
+              "name":  "fence_left",
               "type":  "wall",
-              "img":  "TILE/saku.png"
+              "img":  "TILE/saku_left.png",
+              "base_img":  "TILE/grass.png",
+              "layer":  "overlay"
           },
     "5":  {
               "name":  "tree",
               "type":  "wall",
-              "img":  "TILE/tree.png"
+              "img":  "TILE/tree.png",
+              "base_img":  "TILE/grass.png",
+              "layer":  "overlay",
+              "scale":  2
+          },
+    "6":  {
+              "name":  "fence_right",
+              "type":  "wall",
+              "img":  "TILE/saku_right.png",
+              "base_img":  "TILE/grass.png",
+              "layer":  "overlay"
+          },
+    "7":  {
+              "name":  "fence",
+              "type":  "wall",
+              "img":  "TILE/saku.png",
+              "base_img":  "TILE/grass.png",
+              "layer":  "overlay"
           }
 }

@@ -17,7 +17,18 @@ class Player:
     BATTLE_CURTAIN_COLUMNS = 10
     BATTLE_CURTAIN_ROWS = 8
     BATTLE_CURTAIN_COLUMN_STAGGER = 0.15
-    def __init__(self, name, map_num, x, y, save_slot=1, tutorial_stage=None, party_status=None):
+    RESPAWN_SAFE_STEPS = 8
+    def __init__(
+        self,
+        name,
+        map_num,
+        x,
+        y,
+        save_slot=1,
+        tutorial_stage=None,
+        party_status=None,
+        checkpoint=None,
+    ):
         self.state = MOVE
         self.save_slot = int(save_slot)
         self.name = name
@@ -25,6 +36,16 @@ class Player:
         self.hand = []
         self.rng = random.Random()
         self.encounter_safe_steps = 0
+        checkpoint_data = checkpoint if isinstance(checkpoint, dict) else {}
+        checkpoint_direction = str(checkpoint_data.get("direction", FRONT))
+        if checkpoint_direction not in (FRONT, BACK, LEFT, RIGHT):
+            checkpoint_direction = FRONT
+        self.checkpoint = {
+            "map_num": int(checkpoint_data.get("map_num", map_num)),
+            "x": int(checkpoint_data.get("x", x)),
+            "y": int(checkpoint_data.get("y", y)),
+            "direction": checkpoint_direction,
+        }
         self.tutorial_stage = (
             int(tutorial_stage)
             if tutorial_stage is not None
@@ -85,6 +106,28 @@ class Player:
         self.state = MOVE
         self.talk = None
         self.message = None
+
+    def register_checkpoint(self):
+        self.checkpoint = {
+            "map_num": int(self.move.name),
+            "x": int(self.move.rect.x),
+            "y": int(self.move.rect.y),
+            "direction": str(self.move.direction),
+        }
+
+    def return_to_checkpoint(self):
+        self.full_restore_party()
+        checkpoint = self.checkpoint
+        self.change_map(
+            checkpoint["map_num"],
+            checkpoint["x"],
+            checkpoint["y"],
+        )
+        self.move.direction = checkpoint["direction"]
+        self.encounter_safe_steps = max(
+            self.encounter_safe_steps,
+            self.RESPAWN_SAFE_STEPS,
+        )
     def handle_event(self, event, mx, my):
         if event.type != pygame.KEYDOWN:
             return
@@ -238,8 +281,11 @@ class Player:
                 )
             self.tutorial_battle_active = False
             self.tutorial_victory_stage = None
-        self.state = MOVE
         self.battle = None
+        if battle_outcome == "defeat":
+            self.return_to_checkpoint()
+        else:
+            self.state = MOVE
         self.refresh_owned_characters()
         self.dougu.refresh()
         audio_manager.play_bgm("field")

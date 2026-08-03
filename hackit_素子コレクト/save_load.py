@@ -144,6 +144,12 @@ def collect_game_data(player, state_files=None):
         "direction": str(player.move.direction),
         "encounter_safe_steps": int(player.encounter_safe_steps),
         "tutorial_stage": int(getattr(player, "tutorial_stage", 3)),
+        "checkpoint": {
+            "map_num": int(player.checkpoint["map_num"]),
+            "x": int(player.checkpoint["x"]),
+            "y": int(player.checkpoint["y"]),
+            "direction": str(player.checkpoint["direction"]),
+        },
         "party_status": [
             {
                 "character_id": int(status["character_id"]),
@@ -276,5 +282,11 @@ def initial_player_data():
         "direction": FRONT,
         "encounter_safe_steps": 0,
         "tutorial_stage": 0,
+        "checkpoint": {
+            "map_num": 1,
+            "x": 15 * 32,
+            "y": 19 * 32,
+            "direction": FRONT,
+        },
         "party_status": [],
     }

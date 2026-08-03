@@ -28,6 +28,15 @@ def player_from_player_data(player_data, save_slot):
             )
         ),
         party_status=player_data.get("party_status"),
+        checkpoint=player_data.get(
+            "checkpoint",
+            {
+                "map_num": int(player_data["map_num"]),
+                "x": int(player_data["x"]),
+                "y": int(player_data["y"]),
+                "direction": str(player_data.get("direction", FRONT)),
+            },
+        ),
     )
     player.money = int(player_data["money"])
     player.menu.money = player.money
