@@ -1,5 +1,22 @@
 {
-    "inventory": [],
+    "inventory": [
+        {
+            "item_id": 1,
+            "amount": 3
+        },
+        {
+            "item_id": 2,
+            "amount": 3
+        },
+        {
+            "item_id": 3,
+            "amount": 2
+        },
+        {
+            "item_id": 4,
+            "amount": 3
+        }
+    ],
     "items": {
         "1": {
             "name": "item1",

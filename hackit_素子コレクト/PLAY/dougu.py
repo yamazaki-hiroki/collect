@@ -17,6 +17,40 @@ def load_dougu_data(path=DOUGU_DATA_PATH):
         return json.load(f)
 
 
+def add_dougu_amounts(amounts, path=DOUGU_DATA_PATH):
+    path = Path(path)
+    try:
+        try:
+            data = load_dougu_data(path)
+        except (FileNotFoundError, json.JSONDecodeError, OSError):
+            data = {}
+        totals = {}
+        for entry in data.get("inventory", []):
+            item_id = int(entry.get("item_id", -1))
+            amount = int(entry.get("amount", 0))
+            if item_id >= 0 and amount > 0:
+                totals[item_id] = totals.get(item_id, 0) + amount
+        for item_id, amount in amounts.items():
+            item_id = int(item_id)
+            amount = int(amount)
+            if item_id >= 0 and amount > 0:
+                totals[item_id] = totals.get(item_id, 0) + amount
+        data["inventory"] = [
+            {"item_id": item_id, "amount": totals[item_id]}
+            for item_id in sorted(totals)
+            if totals[item_id] > 0
+        ]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_suffix(path.suffix + ".tmp")
+        with open(temporary, "w", encoding="utf-8") as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
+            file.write("\n")
+        temporary.replace(path)
+        return True
+    except (OSError, TypeError, ValueError):
+        return False
+
+
 class Dougu:
     """道具の一覧と詳細を表示するメニュー画面。"""
 

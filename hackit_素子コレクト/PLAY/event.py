@@ -106,6 +106,19 @@ class Event:
         finished = self.page_talk(game)
         if not finished:
             return
+
+        reward_each = max(0, int(entry.get("item_reward_each", 0)))
+        reward_message = None
+        if reward_each:
+            if not game.grant_all_items(reward_each):
+                game.show_message(
+                    "\u9053\u5177\u3092\u53d7\u3051\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3082\u3046\u4e00\u5ea6\u30de\u30a8\u30c0\u306b\u8a71\u3057\u304b\u3051\u3066\u304f\u3060\u3055\u3044"
+                )
+                return
+            reward_message = (
+                f"\u9053\u5177\u3092\u5404{reward_each}\u500b\u305a\u3064\u53d7\u3051\u53d6\u308a\u307e\u3057\u305f"
+            )
+
         if "advance_to" in entry:
             game.tutorial_stage = max(
                 game.tutorial_stage,
@@ -123,7 +136,9 @@ class Event:
                 game.show_message(
                     "\u30c1\u30e5\u30fc\u30c8\u30ea\u30a2\u30eb\u6226\u3092\u958b\u59cb\u3067\u304d\u307e\u305b\u3093"
                 )
-
+            return
+        if reward_message:
+            game.show_message(reward_message)
     def tutorial_exit(self, game):
         required_stage = int(self.data.get("required_stage", 0))
         if game.tutorial_stage < required_stage:

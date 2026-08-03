@@ -69,7 +69,8 @@
                                     "2":  {
                                               "name":  "エンジニア:マエダ",
                                               "text":  "意外と手慣れているじゃないか。\nこれなら大丈夫だな。\n北のゲートからオーム村へ向かってくれ。\n行ってこい！",
-                                              "advance_to":  3
+                                              "advance_to":  3,
+                                              "item_reward_each":  3
                                           }
                                 },
                      "default":  {
@@ -125,7 +126,7 @@
     {
         "num":  1,
         "x":  15,
-        "y":  1,
+        "y":  6,
         "wall":  true,
         "type":  "tutorial_exit",
         "data":  {

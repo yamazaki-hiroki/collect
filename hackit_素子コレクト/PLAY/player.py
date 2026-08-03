@@ -3,7 +3,7 @@ from COMMON.audio import audio_manager
 from COMMON.config import *
 from PLAY.move import Move
 from PLAY.menu import Menu
-from PLAY.dougu import Dougu
+from PLAY.dougu import Dougu, add_dougu_amounts
 from PLAY.element import Element
 from PLAY.formation import Formation
 from PLAY.synthesis import Synthesis
@@ -165,6 +165,19 @@ class Player:
         self.owned_characters = load_owned_characters()
         self.element.characters = list(self.owned_characters)
         self.formation.characters = list(self.owned_characters)
+
+    def grant_all_items(self, amount_each):
+        amount_each = int(amount_each)
+        if amount_each <= 0:
+            return True
+        rewards = {
+            int(item_id): amount_each
+            for item_id in self.dougu.items
+        }
+        if not rewards or not add_dougu_amounts(rewards):
+            return False
+        self.dougu.refresh()
+        return True
 
     @staticmethod
     def _status_int(value, default):
@@ -463,7 +476,7 @@ class Player:
             return "\u76ee\u7684: \u53f3\u4e0a\u306e\u8a13\u7df4\u5834\u3067\u300c! \u30e4\u30de\u30b6\u30ad\u300d\u306b\u8a71\u3057\u304b\u3051\u308b"
         if self.tutorial_stage == 2:
             return "\u76ee\u7684: \u30de\u30a8\u30c0\u306b\u52dd\u5229\u3092\u5831\u544a\u3059\u308b"
-        return "\u76ee\u7684: \u30de\u30c3\u30d7\u6700\u4e0a\u90e8\u4e2d\u592e\u306e\u300c\u5317\u30b2\u30fc\u30c8\u300d\u3078\u5411\u304b\u3046"
+        return "\u76ee\u7684: \u5317\u5074\u4e2d\u592e\u306e\u300c\u5317\u30b2\u30fc\u30c8\u300d\u3078\u5411\u304b\u3046"
 
     def _draw_tutorial_objective(self, screen):
         objective = self._tutorial_objective()
